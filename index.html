@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fichas de Bernardo y Arya</title>
+
+  <style>
+    :root {
+      --bg: #f4f1ec;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #6b7280;
+      --line: #eee4d9;
+      --tag-bg: #efe7dc;
+      --tag-text: #6b4f35;
+      --accent: #d69b5c;
+      --soft: #fff7ed;
+      --pending: #f8fafc;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0 0 8px;
+      font-size: 34px;
+      color: #2f2a25;
+    }
+
+    .intro {
+      text-align: center;
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #2f2a25;
+      color: white;
+      font-size: 14px;
+    }
+
+    button.secondary {
+      background: var(--tag-bg);
+      color: var(--tag-text);
+    }
+
+    button.small {
+      margin-top: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      background: #efe7dc;
+      color: #6b4f35;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 28px;
+      align-items: start;
+    }
+
+    .card, .panel {
+      background: var(--card);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      border: 1px solid #e6dfd6;
+    }
+
+    .photo-wrap {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #ddd3c8;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .photo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      transform-origin: center center;
+    }
+
+    .photo-help {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      background: rgba(47, 42, 37, 0.78);
+      color: white;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      pointer-events: none;
+    }
+
+    .photo-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 10px;
+      background: #f7efe5;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .photo-controls button {
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .name {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 0;
+      color: #2f2a25;
+    }
+
+    .tag {
+      font-size: 13px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 7px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .subtitle {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .section { margin-top: 20px; }
+
+    .section h3, .panel h2 {
+      margin: 0 0 10px;
+      color: #2f2a25;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+    }
+
+    .section h3 { font-size: 17px; }
+    .panel h2 { font-size: 22px; }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.65;
+    }
+
+    .highlight {
+      background: var(--soft);
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-top: 14px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .pending {
+      background: var(--pending);
+      border-left-color: #94a3b8;
+    }
+
+    .panel {
+      margin-top: 30px;
+      padding: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 14px 0 20px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #ddd6cc;
+      border-radius: 12px;
+      padding: 10px;
+      font: inherit;
+      background: white;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 74px;
+      resize: vertical;
+    }
+
+    .reminder-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .reminder {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      display: grid;
+      gap: 8px;
+      background: #fffdf9;
+    }
+
+    .reminder-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .pill {
+      font-size: 12px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      font-weight: 700;
+      white-space: nowrap;
+      display: inline-block;
+      margin: 2px 2px 2px 0;
+    }
+
+    .danger { background: #fee2e2; color: #991b1b; }
+    .soon { background: #fef3c7; color: #92400e; }
+    .ok { background: #dcfce7; color: #166534; }
+    .neutral { background: #e5e7eb; color: #374151; }
+
+    .alert-line {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .alert-danger { color: #991b1b; }
+    .alert-soon { color: #92400e; }
+    .alert-ok { color: #166534; }
+
+    .comparison table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--tag-bg);
+      color: #4b3523;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    [contenteditable="true"] {
+      outline: 2px dashed transparent;
+      border-radius: 6px;
+      padding: 1px 3px;
+    }
+
+    [contenteditable="true"]:focus {
+      outline-color: var(--accent);
+      background: #fff7ed;
+    }
+
+    @media print {
+      body { background: white; padding: 12px; }
+      .top-actions,
+      .editor,
+      button.small,
+      .reminder button,
+      .photo-help,
+      .photo-controls {
+        display: none;
+      }
+      .card, .panel {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f4f1ec">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Perros">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+</head>
+
+<body>
+  <main class="page">
+    <h1>Fichas de Bernardo y Arya</h1>
+    <p class="intro">Registro familiar editable de salud, alimentación, rutina, vacunas, veterinario y baños.</p>
+
+    <div class="top-actions">
+      <button onclick="saveAll()">Guardar cambios</button>
+      <button class="secondary" onclick="exportData()">Exportar datos</button>
+      <button class="secondary" onclick="document.getElementById('importFile').click()">Importar datos</button>
+      <button class="secondary" onclick="window.print()">Imprimir / Guardar PDF</button>
+      <button class="secondary" onclick="resetData()">Restaurar datos iniciales</button>
+      <input id="importFile" type="file" accept="application/json,.json" style="display:none" onchange="importData(event)" />
+    </div>
+
+    <section class="cards" id="cards"></section>
+
+    <section class="panel editor">
+      <h2>Agregar recordatorio</h2>
+
+      <div class="form-grid">
+        <label>Perro
+          <select id="reminderDog">
+            <option>Bernardo</option>
+            <option>Arya</option>
+            <option>Ambos</option>
+          </select>
+        </label>
+
+        <label>Tipo
+          <select id="reminderType">
+            <option>Veterinario</option>
+            <option>Vacuna</option>
+            <option>Baño / peluquería</option>
+            <option>Medicación</option>
+            <option>Otro</option>
+          </select>
+        </label>
+
+        <label>Fecha
+          <input id="reminderDate" type="date" />
+        </label>
+
+        <label>Título
+          <input id="reminderTitle" placeholder="Ej: Control Cushing" />
+        </label>
+      </div>
+
+      <label>Notas
+        <textarea id="reminderNotes" placeholder="Detalle del recordatorio"></textarea>
+      </label>
+
+      <div style="margin-top: 14px;">
+        <button onclick="addReminder()">Agregar recordatorio</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Próximos recordatorios</h2>
+      <div id="reminders" class="reminder-list"></div>
+      <p class="note">Los recordatorios y cambios se guardan en este navegador usando localStorage. No se sincronizan automáticamente con otros dispositivos.</p>
+    </section>
+
+    <section class="panel comparison">
+      <h2>Resumen comparativo</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Aspecto</th>
+            <th>Bernardo</th>
+            <th>Arya</th>
+          </tr>
+        </thead>
+        <tbody id="comparisonRows"></tbody>
+      </table>
+      <p class="note">Nota: esta ficha organiza la información disponible hasta ahora. No reemplaza indicaciones veterinarias.</p>
+    </section>
+  </main>
+
+  <script>
+    const initialData = {
+      dogs: [
+        {
+          id: "bernardo",
+          nombre: "Bernardo",
+          sexo: "Macho",
+          foto: "./fotos/bernardo.jpeg",
+          imageX: 0,
+          imageY: 0,
+          imageScale: 1,
+          subtitulo: "Perro mediano, negro, de pelo largo. Perfil activo, amigable y ansioso.",
+          datos: [
+            "Tamaño: mediano",
+            "Peso: aproximadamente 9 kg",
+            "Edad: pendiente confirmar"
+          ],
+          temperamento: [
+            "Activo",
+            "Amigable",
+            "Ansioso",
+            "Necesita rutina estable y actividad diaria"
+          ],
+          salud: [
+            "Condición principal: pancreatitis crónica",
+            "Medicación actual: no toma medicamentos",
+            "Foco veterinario: control digestivo y prevención de recaídas"
+          ],
+          alimentacion: [
+            "Come pollo hervido con papas",
+            "Dieta baja en grasas por pancreatitis",
+            "Come dos veces al día: al mediodía y a la noche",
+            "Actualmente recibe porciones grandes"
+          ],
+          rutina: [
+            "Baño y peluquería: Tiendanimal del Shopping Larios",
+            "Conviene mantener horarios de comida y paseo lo más estables posible"
+          ],
+          prioridad: "Digestión, tolerancia a alimentos, vómitos, diarrea, dolor abdominal, apetito, energía y ansiedad.",
+          pendientes: "Edad, peso exacto actualizado, frecuencia de paseos y antecedentes veterinarios más detallados."
+        },
+        {
+          id: "arya",
+          nombre: "Arya",
+          sexo: "Hembra",
+          foto: "./fotos/arya.jpeg",
+          imageX: 0,
+          imageY: 0,
+          imageScale: 1,
+          subtitulo: "Perra color arena, mediana, atenta, sensible y expresiva.",
+          datos: [
+            "Tamaño: mediano",
+            "Peso: pendiente confirmar",
+            "Edad: pendiente confirmar"
+          ],
+          temperamento: [
+            "Atenta",
+            "Expresiva",
+            "Tranquila pero alerta",
+            "Perfil sensible, con buena conexión visual"
+          ],
+          salud: [
+            "Condición principal: síndrome de Cushing",
+            "Tipo de seguimiento: hormonal y clínico periódico",
+            "Foco veterinario: controlar síntomas, medicación y posibles efectos secundarios"
+          ],
+          medicacion: [
+            "Vetoryl: 10 mg cada 12 horas",
+            "Segundo medicamento: 1 comprimido por día, nombre pendiente de confirmar",
+            "Propalin: consulta pendiente / combinar solo con validación veterinaria"
+          ],
+          alimentacion: [
+            "Come dos veces al día: al mediodía y a la noche",
+            "Actualmente recibe porciones grandes",
+            "Dieta específica: pendiente registrar"
+          ],
+          rutina: [
+            "Baño y peluquería: Tiendanimal del Shopping Larios",
+            "Conviene monitorear cambios de sed, apetito, orina y energía"
+          ],
+          prioridad: "Sed, apetito, frecuencia urinaria, energía, abdomen, piel/pelo, peso y controles veterinarios por Cushing.",
+          pendientes: "Edad, peso exacto, dieta actual, nombre del segundo medicamento y resultados/controles veterinarios recientes."
+        }
+      ],
+      reminders: [
+        {
+          dog: "Arya",
+          type: "Veterinario",
+          date: "",
+          title: "Próximo control por Cushing",
+          notes: "Completar fecha del próximo control veterinario."
+        },
+        {
+          dog: "Ambos",
+          type: "Vacuna",
+          date: "",
+          title: "Revisar calendario de vacunas",
+          notes: "Completar próximas vacunas según cartilla veterinaria."
+        },
+        {
+          dog: "Ambos",
+          type: "Baño / peluquería",
+          date: "",
+          title: "Próximo baño en Tiendanimal Shopping Larios",
+          notes: "Completar fecha de próxima cita."
+        }
+      ]
+    };
+
+    let data = JSON.parse(localStorage.getItem("perrosData")) || structuredClone(initialData);
+
+    function ensureImageFields() {
+      data.dogs.forEach(dog => {
+        if (dog.imageX === undefined) dog.imageX = 0;
+        if (dog.imageY === undefined) dog.imageY = 0;
+        if (dog.imageScale === undefined) dog.imageScale = 1;
+      });
+    }
+
+    function listToHTML(items) {
+      return items.map(item => `<li contenteditable="true">${item}</li>`).join("");
+    }
+
+    function renderDogs() {
+      ensureImageFields();
+
+      const cards = document.getElementById("cards");
+
+      cards.innerHTML = data.dogs.map((dog, index) => `
+        <article class="card" data-index="${index}">
+          <div class="photo-wrap" data-index="${index}">
+            <img
+              class="photo"
+              src="${dog.foto}"
+              alt="Foto real de ${dog.nombre}"
+              style="transform: translate(${dog.imageX}px, ${dog.imageY}px) scale(${dog.imageScale});"
+              draggable="false"
+            />
+            <div class="photo-help">Arrastrar para encuadrar</div>
+          </div>
+
+          <div class="photo-controls">
+            <button onclick="zoomPhoto(${index}, 0.1)">Zoom +</button>
+            <button onclick="zoomPhoto(${index}, -0.1)">Zoom -</button>
+            <button onclick="resetPhoto(${index})">Reset foto</button>
+          </div>
+
+          <div class="content">
+            <div class="name-row">
+              <h2 class="name" contenteditable="true">${dog.nombre}</h2>
+              <span class="tag" contenteditable="true">${dog.sexo}</span>
+            </div>
+
+            <p class="subtitle" contenteditable="true">${dog.subtitulo}</p>
+
+            ${renderSection("📌 Datos generales", "datos", dog.datos)}
+            ${renderSection("🧠 Temperamento", "temperamento", dog.temperamento)}
+            ${renderSection("🩺 Salud", "salud", dog.salud)}
+            ${dog.medicacion ? renderSection("💊 Medicación", "medicacion", dog.medicacion) : ""}
+            ${renderSection("🍽️ Alimentación", "alimentacion", dog.alimentacion)}
+            ${renderSection("🚿 Rutina y cuidados", "rutina", dog.rutina)}
+
+            <div class="highlight">
+              <strong>Prioridad de seguimiento:</strong>
+              <span contenteditable="true" data-field="prioridad">${dog.prioridad}</span>
+            </div>
+
+            <div class="highlight pending">
+              <strong>Pendiente de completar:</strong>
+              <span contenteditable="true" data-field="pendientes">${dog.pendientes}</span>
+            </div>
+          </div>
+        </article>
+      `).join("");
+
+      enableImageDrag();
+      renderComparison();
+    }
+
+    function renderSection(title, field, items) {
+      return `
+        <div class="section">
+          <h3>${title}</h3>
+          <ul data-field="${field}">
+            ${listToHTML(items)}
+          </ul>
+          <button class="small" onclick="addItem(this)">+ agregar dato</button>
+        </div>
+      `;
+    }
+
+    function addItem(button) {
+      const section = button.closest(".section");
+      const ul = section.querySelector("ul");
+      const li = document.createElement("li");
+
+      li.contentEditable = "true";
+      li.innerText = "Nuevo dato";
+      ul.appendChild(li);
+      li.focus();
+    }
+
+    function applyPhotoTransform(index) {
+      const wrapper = document.querySelector(`.photo-wrap[data-index="${index}"]`);
+      if (!wrapper) return;
+      const img = wrapper.querySelector(".photo");
+      const dog = data.dogs[index];
+      img.style.transform = `translate(${dog.imageX}px, ${dog.imageY}px) scale(${dog.imageScale})`;
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem("perrosData", JSON.stringify(data));
+    }
+
+    function zoomPhoto(index, change) {
+      const dog = data.dogs[index];
+      dog.imageScale = Math.max(0.5, Math.min(3, (dog.imageScale || 1) + change));
+      applyPhotoTransform(index);
+      saveToLocalStorage();
+    }
+
+    function resetPhoto(index) {
+      data.dogs[index].imageX = 0;
+      data.dogs[index].imageY = 0;
+      data.dogs[index].imageScale = 1;
+      applyPhotoTransform(index);
+      saveToLocalStorage();
+    }
+
+    function enableImageDrag() {
+      document.querySelectorAll(".photo-wrap").forEach(wrapper => {
+        const index = Number(wrapper.dataset.index);
+        const img = wrapper.querySelector(".photo");
+
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let offsetX = data.dogs[index].imageX || 0;
+        let offsetY = data.dogs[index].imageY || 0;
+
+        function startDrag(clientX, clientY) {
+          isDragging = true;
+          offsetX = data.dogs[index].imageX || 0;
+          offsetY = data.dogs[index].imageY || 0;
+          startX = clientX - offsetX;
+          startY = clientY - offsetY;
+          wrapper.style.cursor = "grabbing";
+        }
+
+        function moveDrag(clientX, clientY) {
+          if (!isDragging) return;
+
+          offsetX = clientX - startX;
+          offsetY = clientY - startY;
+
+          data.dogs[index].imageX = offsetX;
+          data.dogs[index].imageY = offsetY;
+
+          img.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${data.dogs[index].imageScale || 1})`;
+        }
+
+        function endDrag() {
+          if (!isDragging) return;
+
+          isDragging = false;
+          wrapper.style.cursor = "grab";
+          saveToLocalStorage();
+        }
+
+        wrapper.addEventListener("mousedown", (event) => {
+          event.preventDefault();
+          startDrag(event.clientX, event.clientY);
+        });
+
+        window.addEventListener("mousemove", (event) => {
+          moveDrag(event.clientX, event.clientY);
+        });
+
+        window.addEventListener("mouseup", endDrag);
+
+        wrapper.addEventListener("touchstart", (event) => {
+          if (!event.touches[0]) return;
+          event.preventDefault();
+          const touch = event.touches[0];
+          startDrag(touch.clientX, touch.clientY);
+        }, { passive: false });
+
+        window.addEventListener("touchmove", (event) => {
+          if (!event.touches[0]) return;
+          const touch = event.touches[0];
+          moveDrag(touch.clientX, touch.clientY);
+        }, { passive: false });
+
+        window.addEventListener("touchend", endDrag);
+      });
+    }
+
+    function collectDogDataFromHTML() {
+      document.querySelectorAll(".card[data-index]").forEach(card => {
+        const index = Number(card.dataset.index);
+        const dog = data.dogs[index];
+
+        dog.nombre = card.querySelector(".name").innerText.trim();
+        dog.sexo = card.querySelector(".tag").innerText.trim();
+        dog.subtitulo = card.querySelector(".subtitle").innerText.trim();
+
+        card.querySelectorAll("ul[data-field]").forEach(ul => {
+          const field = ul.dataset.field;
+
+          dog[field] = [...ul.querySelectorAll("li")]
+            .map(li => li.innerText.trim())
+            .filter(Boolean);
+        });
+
+        dog.prioridad = card.querySelector('[data-field="prioridad"]').innerText.trim();
+        dog.pendientes = card.querySelector('[data-field="pendientes"]').innerText.trim();
+      });
+    }
+
+    function saveAll() {
+      collectDogDataFromHTML();
+      saveToLocalStorage();
+      renderComparison();
+      alert("Cambios guardados en este navegador.");
+    }
+
+    function resetData() {
+      if (!confirm("¿Seguro que querés restaurar los datos iniciales?")) return;
+
+      localStorage.removeItem("perrosData");
+      data = structuredClone(initialData);
+      renderDogs();
+      renderReminders();
+    }
+
+    function addReminder() {
+      const reminder = {
+        dog: document.getElementById("reminderDog").value,
+        type: document.getElementById("reminderType").value,
+        date: document.getElementById("reminderDate").value,
+        title: document.getElementById("reminderTitle").value || "Recordatorio sin título",
+        notes: document.getElementById("reminderNotes").value || ""
+      };
+
+      data.reminders.push(reminder);
+      saveToLocalStorage();
+
+      document.getElementById("reminderTitle").value = "";
+      document.getElementById("reminderNotes").value = "";
+      document.getElementById("reminderDate").value = "";
+
+      renderReminders();
+    }
+
+    function deleteReminder(index) {
+      data.reminders.splice(index, 1);
+      saveToLocalStorage();
+      renderReminders();
+    }
+
+    function statusForDate(dateString) {
+      if (!dateString) {
+        return {
+          text: "Sin fecha",
+          cls: "neutral",
+          alert: "⚪ Agregá una fecha para activar el seguimiento.",
+          alertCls: ""
+        };
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const date = new Date(dateString + "T00:00:00");
+      const diff = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+
+      if (diff < 0) {
+        return {
+          text: `Vencido hace ${Math.abs(diff)} días`,
+          cls: "danger",
+          alert: "❌ Vencido",
+          alertCls: "alert-danger"
+        };
+      }
+
+      if (diff === 0) {
+        return {
+          text: "Hoy",
+          cls: "soon",
+          alert: "⚠️ Es hoy",
+          alertCls: "alert-soon"
+        };
+      }
+
+      if (diff <= 3) {
+        return {
+          text: `En ${diff} días`,
+          cls: "soon",
+          alert: "⚠️ Próximo",
+          alertCls: "alert-soon"
+        };
+      }
+
+      if (diff <= 14) {
+        return {
+          text: `En ${diff} días`,
+          cls: "soon",
+          alert: "🟡 Se acerca",
+          alertCls: "alert-soon"
+        };
+      }
+
+      return {
+        text: `En ${diff} días`,
+        cls: "ok",
+        alert: "✅ Programado",
+        alertCls: "alert-ok"
+      };
+    }
+
+    function renderReminders() {
+      const container = document.getElementById("reminders");
+
+      const reminders = [...data.reminders]
+        .sort((a, b) => (a.date || "9999-12-31").localeCompare(b.date || "9999-12-31"));
+
+      if (!reminders.length) {
+        container.innerHTML = "<p>No hay recordatorios cargados.</p>";
+        return;
+      }
+
+      container.innerHTML = reminders.map((r) => {
+        const originalIndex = data.reminders.indexOf(r);
+        const status = statusForDate(r.date);
+
+        return `
+          <div class="reminder">
+            <div class="reminder-top">
+              <strong>${r.title}</strong>
+              <span class="pill ${status.cls}">${status.text}</span>
+            </div>
+
+            <div class="alert-line ${status.alertCls}">
+              ${status.alert}
+            </div>
+
+            <div>
+              <span class="pill">${r.dog}</span>
+              <span class="pill">${r.type}</span>
+              ${r.date ? `<span class="pill">${r.date}</span>` : ""}
+            </div>
+
+            <div>${r.notes || "Sin notas"}</div>
+
+            <div>
+              <button class="secondary" onclick="deleteReminder(${originalIndex})">Eliminar</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function getField(dog, field, fallback = "Pendiente") {
+      const values = dog[field] || [];
+      return values.join("<br>") || fallback;
+    }
+
+    function renderComparison() {
+      const b = data.dogs.find(d => d.id === "bernardo") || data.dogs[0];
+      const a = data.dogs.find(d => d.id === "arya") || data.dogs[1];
+
+      document.getElementById("comparisonRows").innerHTML = `
+        <tr>
+          <td>Sexo</td>
+          <td>${b.sexo}</td>
+          <td>${a.sexo}</td>
+        </tr>
+        <tr>
+          <td>Datos generales</td>
+          <td>${getField(b, "datos")}</td>
+          <td>${getField(a, "datos")}</td>
+        </tr>
+        <tr>
+          <td>Salud</td>
+          <td>${getField(b, "salud")}</td>
+          <td>${getField(a, "salud")}</td>
+        </tr>
+        <tr>
+          <td>Medicación</td>
+          <td>${getField(b, "medicacion", "No toma medicamentos actualmente")}</td>
+          <td>${getField(a, "medicacion")}</td>
+        </tr>
+        <tr>
+          <td>Alimentación</td>
+          <td>${getField(b, "alimentacion")}</td>
+          <td>${getField(a, "alimentacion")}</td>
+        </tr>
+        <tr>
+          <td>Rutina</td>
+          <td>${getField(b, "rutina")}</td>
+          <td>${getField(a, "rutina")}</td>
+        </tr>
+      `;
+    }
+
+
+    function exportData() {
+      collectDogDataFromHTML();
+      saveToLocalStorage();
+
+      const exportObject = {
+        exportedAt: new Date().toISOString(),
+        app: "Fichas Bernardo y Arya",
+        version: "1.1",
+        data
+      };
+
+      const blob = new Blob([JSON.stringify(exportObject, null, 2)], {
+        type: "application/json"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const today = new Date().toISOString().slice(0, 10);
+
+      link.href = url;
+      link.download = `backup-perros-${today}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          const importedData = parsed.data || parsed;
+
+          if (!importedData.dogs || !Array.isArray(importedData.dogs)) {
+            alert("El archivo no parece ser un backup válido de las fichas.");
+            return;
+          }
+
+          if (!confirm("Esto reemplazará los datos actuales por los del backup. ¿Querés continuar?")) {
+            return;
+          }
+
+          data = importedData;
+
+          if (!data.reminders) data.reminders = [];
+          ensureImageFields();
+
+          saveToLocalStorage();
+          renderDogs();
+          renderReminders();
+
+          alert("Backup importado correctamente.");
+        } catch (error) {
+          alert("No se pudo importar el archivo. Verificá que sea un JSON válido.");
+        } finally {
+          event.target.value = "";
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    renderDogs();
+    renderReminders();
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function() {
+        navigator.serviceWorker.register("./service-worker.js")
+          .catch(function(error) {
+            console.log("Service Worker registration failed:", error);
+          });
+      });
+    }
+  </script>
+
+</body>
+</html>
